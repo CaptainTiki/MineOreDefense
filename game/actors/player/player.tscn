@@ -1,0 +1,112 @@
+[gd_scene format=3 uid="uid://ctli1cakrjgnp"]
+
+[ext_resource type="Script" uid="uid://cj680ntxhdmfy" path="res://game/actors/player/player_controller.gd" id="1_ctrl"]
+[ext_resource type="Script" uid="uid://bkay5jewtfrg0" path="res://game/components/player/player_stats.gd" id="2_stats"]
+[ext_resource type="Script" uid="uid://c4ibam0e7qei4" path="res://game/components/player/player_camera.gd" id="3_cam"]
+[ext_resource type="Resource" path="res://resources/player/player_stats_default.tres" id="4_sres"]
+[ext_resource type="Script" uid="uid://couw105c3bde4" path="res://addons/godot_state_charts/state_chart.gd" id="5_sc"]
+[ext_resource type="Script" uid="uid://jk2jm1g6q853" path="res://addons/godot_state_charts/compound_state.gd" id="6_cs"]
+[ext_resource type="Script" uid="uid://cytafq8i1y8qm" path="res://addons/godot_state_charts/atomic_state.gd" id="7_as"]
+[ext_resource type="Script" uid="uid://cf1nsco3w0mf6" path="res://addons/godot_state_charts/transition.gd" id="8_tr"]
+[ext_resource type="Script" path="res://game/components/player/player_inventory.gd" id="9_inv"]
+[ext_resource type="PackedScene" path="res://game/actors/weapons/mining_laser.tscn" id="10_laser"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_001"]
+radius = 0.3
+height = 1.8
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_001"]
+radius = 0.3
+height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_001"]
+albedo_color = Color(0.2, 0.6, 0.9, 1)
+
+[node name="Player" type="CharacterBody3D" unique_id=335673607]
+script = ExtResource("1_ctrl")
+
+[node name="PlayerStats" type="Node" parent="." unique_id=1292407703]
+script = ExtResource("2_stats")
+stats_resource = ExtResource("4_sres")
+
+[node name="PlayerInventory" type="Node" parent="." unique_id=487219034]
+script = ExtResource("9_inv")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=932402963]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_001")
+
+[node name="CapsuleMesh" type="MeshInstance3D" parent="." unique_id=773833479]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("CapsuleMesh_001")
+surface_material_override/0 = SubResource("StandardMaterial3D_001")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=90197713]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+current = true
+script = ExtResource("3_cam")
+
+[node name="InteractionRay" type="RayCast3D" parent="Camera3D" unique_id=433032732]
+target_position = Vector3(0, 0, -3)
+
+[node name="WeaponMount" type="Node3D" parent="Camera3D" unique_id=784375009]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.3, -0.5)
+
+[node name="MiningLaser" parent="Camera3D/WeaponMount" instance=ExtResource("10_laser")]
+
+[node name="StateChart" type="Node" parent="." unique_id=678193400]
+script = ExtResource("5_sc")
+
+[node name="PlayerStates" type="Node" parent="StateChart" unique_id=1091117235]
+script = ExtResource("6_cs")
+initial_state = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="StateChart/PlayerStates" unique_id=1902493985]
+script = ExtResource("7_as")
+
+[node name="ToWalking" type="Node" parent="StateChart/PlayerStates/Idle" unique_id=708514019]
+script = ExtResource("8_tr")
+to = NodePath("../Walking")
+event = &"started_moving"
+delay_in_seconds = "0.0"
+
+[node name="ToSprinting" type="Node" parent="StateChart/PlayerStates/Idle" unique_id=1813715341]
+script = ExtResource("8_tr")
+to = NodePath("../Sprinting")
+event = &"started_sprinting"
+delay_in_seconds = "0.0"
+
+[node name="Walking" type="Node" parent="StateChart/PlayerStates" unique_id=1287350550]
+script = ExtResource("7_as")
+
+[node name="ToIdle" type="Node" parent="StateChart/PlayerStates/Walking" unique_id=1411355245]
+script = ExtResource("8_tr")
+to = NodePath("../Idle")
+event = &"stopped_moving"
+delay_in_seconds = "0.0"
+
+[node name="ToSprinting" type="Node" parent="StateChart/PlayerStates/Walking" unique_id=709925171]
+script = ExtResource("8_tr")
+to = NodePath("../Sprinting")
+event = &"started_sprinting"
+delay_in_seconds = "0.0"
+
+[node name="Sprinting" type="Node" parent="StateChart/PlayerStates" unique_id=879351241]
+script = ExtResource("7_as")
+
+[node name="ToWalking" type="Node" parent="StateChart/PlayerStates/Sprinting" unique_id=544150837]
+script = ExtResource("8_tr")
+to = NodePath("../Walking")
+event = &"stopped_sprinting"
+delay_in_seconds = "0.0"
+
+[node name="ToIdle" type="Node" parent="StateChart/PlayerStates/Sprinting" unique_id=572327007]
+script = ExtResource("8_tr")
+to = NodePath("../Idle")
+event = &"stopped_moving"
+delay_in_seconds = "0.0"
+
+[node name="Dead" type="Node" parent="StateChart/PlayerStates" unique_id=642158347]
+script = ExtResource("7_as")
+
+[node name="StateMachine" type="Node" parent="." unique_id=2115728744]

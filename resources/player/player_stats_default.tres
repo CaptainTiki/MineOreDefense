@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="PlayerStatsResource" format=3]
+
+[ext_resource type="Script" path="res://resources/player/player_stats_resource.gd" id="1_stats"]
+
+[resource]
+script = ExtResource("1_stats")
+max_health = 100.0
+move_speed = 5.0
+sprint_speed = 8.0
+jump_velocity = 5.0

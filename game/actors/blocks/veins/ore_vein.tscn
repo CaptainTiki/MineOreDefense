@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://game/actors/blocks/veins/vein.tscn" id="1_vein"]
+[ext_resource type="Resource" path="res://resources/blocks/ore_vein_data.tres" id="2_dat"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_001"]
+albedo_color = Color(0.72, 0.35, 0.1, 1.0)
+emission_enabled = true
+emission = Color(0.5, 0.2, 0.0, 1.0)
+emission_energy_multiplier = 0.4
+
+[node name="OreVein" instance=ExtResource("1_vein")]
+
+[node name="MeshInstance3D" parent="."]
+surface_material_override/0 = SubResource("Mat_001")
+
+[node name="VeinComponent" parent="."]
+data = ExtResource("2_dat")

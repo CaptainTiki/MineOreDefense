@@ -1,5 +1,5 @@
 # Game Design Document  
-**Crystal Verge: Extraction Protocol – Expense Report Edition**  
+**MineOre Defender**  
 **Version:** 1.0 (Vertical Slice – 30-Day Solo Jam)  
 **Genre:** First-person survival builder / horde defense / light roguelite  
 **Target Length:** One complete run = 45–60 minutes  
@@ -7,13 +7,13 @@
 **Tone:** Darkly comedic corporate dystopia  
 
 ## 1. High Concept (The Fantasy)
-You are a disposable contractor for **Vega Dynamics**, a ruthless megacorp that mines volatile crystal worlds. They dropped you on **Crystal Verge** with a cheap pod, a pickaxe, and an expense form. Your job: hand-mine glowing minerals by day, slap together a temporary fortified outpost, and survive the nightly swarms of crystal-maddened wildlife.  
+You are a disposable contractor for **MineOre Corp**, a ruthless megacorp that mines volatile crystal worlds. They dropped you on **Omnicron 4** with a cheap pod, a pickaxe, and an expense form. Your job: hand-mine glowing minerals by day, slap together a temporary fortified outpost, and survive the nightly swarms of crystal-maddened wildlife.  
 
 The goal is **not** to survive forever. It’s to extract **1,200 Energy Crystals** and call in the evacuation shuttle. The same crystals you need to win are also the best fuel for turrets, shields, and power generators. Every crystal you spend on defense is one less toward extraction.  
 
 When you think you have enough, you plant the beacon and pray you survive one final night. If the base falls or you die… the company shrugs. Your death is cheaper than a recovery shuttle.  
 
-Between runs you wake up in the grimy **Vega Reclamation Hub** — a vending-machine-filled orbital hellhole — and spend your meager **Hazard Pay Credits** at the **Vega Brand Store™** on permanent upgrades. The corp doesn’t care if you live. But they *do* love upselling you slightly-less-shitty equipment.
+Between runs you wake up in the grimy **MineOre Reclamation Hub** — a vending-machine-filled orbital hellhole — and spend your meager **Hazard Pay Credits** at the **MineOre Brand Store™** on permanent upgrades. The corp doesn’t care if you live. But they *do* love upselling you slightly-less-shitty equipment.
 
 **Tagline:** “Mine. Build. Survive. Expense Report Your Corpse.”
 
@@ -62,7 +62,7 @@ Resources are both your currency *and* your win ticket. Automation drills slowly
 ## 5. Enemies & Horde Behavior
 - Pure horde fantasy: crystal-maddened wildlife that feels chaotic and relentless.  
 - Two enemy types in the slice: fast melee swarmers and slower, tankier hulks that smash structures.  
-- Enemies seek the Core Pod. They attack any “Vega property” (player-owned structures or the player) that enters their attack bubble.  
+- Enemies seek the Core Pod. They attack any “MineOre property” (player-owned structures or the player) that enters their attack bubble.  
 - When stuck, they burrow underground and re-emerge closer to the base — visually selling the “they’re tunneling through the crystal veins” fantasy.  
 - No smart pathfinding — just raw numbers, momentum, and swarm pressure.
 
@@ -95,7 +95,7 @@ Resources are both your currency *and* your win ticket. Automation drills slowly
 - Two enemy types with burrow behavior.  
 - Win condition (1,200 crystals + final night survival).  
 - Death/KIA and successful extraction endings.  
-- Tiny Reclamation Hub with functional Vega Brand Store™ and permanent upgrades.  
+- Tiny Reclamation Hub with functional MineOre Brand Store™ and permanent upgrades.  
 - Polished enough to feel complete and replayable, even if unrefined around the edges.
 
 **Explicitly out of scope for the slice:**  

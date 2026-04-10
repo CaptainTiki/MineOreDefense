@@ -1,0 +1,24 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/components/weapons/mining_laser_component.gd" id="1_laser"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_001"]
+size = Vector3(0.02, 0.02, 1.0)
+
+[sub_resource type="StandardMaterial3D" id="LaserMat_001"]
+albedo_color = Color(0.0, 1.0, 0.9, 1.0)
+emission_enabled = true
+emission = Color(0.0, 1.0, 0.9, 1.0)
+emission_energy_multiplier = 3.0
+
+[node name="MiningLaser" type="Node3D"]
+script = ExtResource("1_laser")
+
+[node name="LaserRay" type="RayCast3D" parent="."]
+target_position = Vector3(0, 0, -10)
+enabled = true
+
+[node name="BeamVisual" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("BoxMesh_001")
+surface_material_override/0 = SubResource("LaserMat_001")

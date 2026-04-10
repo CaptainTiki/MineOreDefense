@@ -1,13 +1,21 @@
 extends Node3D
 class_name GameRoot
 
-static var instance = null
+static var instance: GameRoot
 
-# Called when the node enters the scene tree for the first time.
+var _active_level: Level = null
+
 func _ready() -> void:
 	GameRoot.instance = self
 
+func load_level(level: Level) -> void:
+	if _active_level != null:
+		unload_level()
+	_active_level = level
+	add_child(level)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta: float) -> void:
-	pass
+func unload_level() -> void:
+	if _active_level == null:
+		return
+	_active_level.queue_free()
+	_active_level = null
