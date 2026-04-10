@@ -1,0 +1,21 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://ui/game_hud/game_hud.gd" id="1_hud"]
+[ext_resource type="PackedScene" path="res://ui/game_hud/resource_counter_panel.tscn" id="2_rcp"]
+[ext_resource type="PackedScene" path="res://ui/game_hud/wave_info_panel.tscn" id="3_wip"]
+[ext_resource type="PackedScene" path="res://ui/game_hud/core_pod_health_bar.tscn" id="4_cpb"]
+
+[node name="GameHud" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_hud")
+
+[node name="HudContainer" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="ResourceCounterPanel" parent="HudContainer" instance=ExtResource("2_rcp")]
+
+[node name="WaveInfoPanel" parent="HudContainer" instance=ExtResource("3_wip")]
+
+[node name="CorePodHealthBar" parent="HudContainer" instance=ExtResource("4_cpb")]

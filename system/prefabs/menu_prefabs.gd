@@ -7,3 +7,4 @@ class_name MenuPrefabs
 #Menu Prefabs
 static var main_menu_scene: PackedScene = load("uid://djdvv5hs7iv0")
 static var pause_menu_scene: PackedScene = load("res://ui/menus/pause_menu/pause_menu.tscn")
+static var fabricator_menu_scene: PackedScene = load("res://ui/menus/fabricator_menu/fabricator_menu.tscn")

@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" path="res://game/actors/blocks/veins/ore_vein.tscn" id="3_ore"]
 [ext_resource type="PackedScene" path="res://game/actors/blocks/veins/limestone_vein.tscn" id="4_lime"]
 [ext_resource type="PackedScene" path="res://game/actors/blocks/veins/crystal_vein.tscn" id="5_crys"]
+[ext_resource type="PackedScene" path="res://game/actors/devices/fabricator/fabricator_device.tscn" id="6_fab"]
 
 [sub_resource type="Environment" id="Environment_001"]
 background_mode = 1
@@ -84,3 +85,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, -7)
 
 [node name="CrystalVein2" parent="Veins" unique_id=174402141 instance=ExtResource("5_crys")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 3)
+
+[node name="FabricatorDevice" parent="." instance=ExtResource("6_fab")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1, 4)

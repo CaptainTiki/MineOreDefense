@@ -35,3 +35,6 @@ func resume_from_pause() -> void:
 	get_tree().paused = false
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	menu_manager.hide_current_menu()
+
+func show_game_over() -> void:
+	pass # Wired in Phase 7

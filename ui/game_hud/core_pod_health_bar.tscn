@@ -1,0 +1,38 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://ui/game_hud/core_pod_health_bar.gd" id="1_cpb"]
+
+[sub_resource type="StyleBoxFlat" id="BgStyle_001"]
+bg_color = Color(0.0, 0.0, 0.0, 0.65)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+content_margin_left = 12.0
+content_margin_top = 8.0
+content_margin_right = 12.0
+content_margin_bottom = 8.0
+
+[node name="CorePodHealthBar" type="PanelContainer"]
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -160.0
+offset_top = -52.0
+offset_right = 160.0
+offset_bottom = -16.0
+theme_override_styles/panel = SubResource("BgStyle_001")
+script = ExtResource("1_cpb")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+theme_override_constants/separation = 4
+
+[node name="CorePodLabel" type="Label" parent="VBox"]
+text = "CORE POD"
+horizontal_alignment = 1
+
+[node name="HealthBar" type="ProgressBar" parent="VBox"]
+custom_minimum_size = Vector2(280, 12)
+max_value = 100.0
+value = 100.0

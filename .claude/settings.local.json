@@ -3,7 +3,8 @@
     "allow": [
       "Bash(wc -l /d/Godot/REPOs/MineOreDefense/addons/godot_state_charts/*.gd)",
       "Bash(dir \"D:\\\\Godot\\\\REPOs\\\\MineOreDefense\\\\game\\\\components\" /b)",
-      "Bash(dir \"D:\\\\Godot\\\\REPOs\\\\MineOreDefense\\\\game\\\\actors\" /b)"
+      "Bash(dir \"D:\\\\Godot\\\\REPOs\\\\MineOreDefense\\\\game\\\\actors\" /b)",
+      "Bash(dir \"D:\\\\Godot\\\\REPOs\\\\MineOreDefense\\\\ui\" /b /s)"
     ]
   }
 }

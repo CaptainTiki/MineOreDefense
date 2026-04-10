@@ -29,6 +29,7 @@ func set_menu_data() -> void:
 func init_menus() -> void:
 	_add_menu(Menu.Type.MAIN, MenuPrefabs.main_menu_scene)
 	_add_menu(Menu.Type.PAUSE, MenuPrefabs.pause_menu_scene)
+	_add_menu(Menu.Type.FABRICATOR, MenuPrefabs.fabricator_menu_scene)
 
 func _add_menu(type: Menu.Type, scene: PackedScene) -> void:
 	var menu: Menu = scene.instantiate()

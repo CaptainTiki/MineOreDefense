@@ -1,0 +1,55 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://ui/game_hud/resource_counter_panel.gd" id="1_rcp"]
+
+[sub_resource type="StyleBoxFlat" id="BgStyle_001"]
+bg_color = Color(0.0, 0.0, 0.0, 0.65)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+content_margin_left = 12.0
+content_margin_top = 10.0
+content_margin_right = 12.0
+content_margin_bottom = 10.0
+
+[node name="ResourceCounterPanel" type="PanelContainer"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 230.0
+offset_bottom = 110.0
+theme_override_styles/panel = SubResource("BgStyle_001")
+script = ExtResource("1_rcp")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+theme_override_constants/separation = 6
+
+[node name="OreRow" type="HBoxContainer" parent="VBox"]
+theme_override_constants/separation = 8
+
+[node name="OreIcon" type="ColorRect" parent="VBox/OreRow"]
+custom_minimum_size = Vector2(14, 14)
+color = Color(0.72, 0.35, 0.1, 1.0)
+
+[node name="OreCount" type="Label" parent="VBox/OreRow"]
+text = "Ore: 0"
+
+[node name="LimestoneRow" type="HBoxContainer" parent="VBox"]
+theme_override_constants/separation = 8
+
+[node name="LimestoneIcon" type="ColorRect" parent="VBox/LimestoneRow"]
+custom_minimum_size = Vector2(14, 14)
+color = Color(0.82, 0.80, 0.72, 1.0)
+
+[node name="LimestoneCount" type="Label" parent="VBox/LimestoneRow"]
+text = "Limestone: 0"
+
+[node name="CrystalsRow" type="HBoxContainer" parent="VBox"]
+theme_override_constants/separation = 8
+
+[node name="CrystalsIcon" type="ColorRect" parent="VBox/CrystalsRow"]
+custom_minimum_size = Vector2(14, 14)
+color = Color(0.6, 0.1, 0.85, 1.0)
+
+[node name="CrystalsCount" type="Label" parent="VBox/CrystalsRow"]
+text = "Crystals: 0"

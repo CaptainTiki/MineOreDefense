@@ -8,8 +8,12 @@
 [ext_resource type="Script" uid="uid://jk2jm1g6q853" path="res://addons/godot_state_charts/compound_state.gd" id="6_cs"]
 [ext_resource type="Script" uid="uid://cytafq8i1y8qm" path="res://addons/godot_state_charts/atomic_state.gd" id="7_as"]
 [ext_resource type="Script" uid="uid://cf1nsco3w0mf6" path="res://addons/godot_state_charts/transition.gd" id="8_tr"]
-[ext_resource type="Script" path="res://game/components/player/player_inventory.gd" id="9_inv"]
+[ext_resource type="Script" uid="uid://d1prry4o2misk" path="res://game/components/player/player_inventory.gd" id="9_inv"]
 [ext_resource type="PackedScene" path="res://game/actors/weapons/mining_laser.tscn" id="10_laser"]
+[ext_resource type="Script" uid="uid://cdtmaufsnuu44" path="res://game/actors/player/states/walking_state.gd" id="11_iuwj5"]
+[ext_resource type="Script" uid="uid://f0pti6rgntlw" path="res://game/actors/player/states/player_state_machine.gd" id="11_qdo3w"]
+[ext_resource type="Script" uid="uid://b1jftb04a3r3g" path="res://game/actors/player/states/sprinting_state.gd" id="13_b0bri"]
+[ext_resource type="Script" uid="uid://boyveh6wmcrrw" path="res://game/actors/player/states/dead_state.gd" id="14_64mjj"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_001"]
 radius = 0.3
@@ -52,61 +56,71 @@ target_position = Vector3(0, 0, -3)
 [node name="WeaponMount" type="Node3D" parent="Camera3D" unique_id=784375009]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.3, -0.5)
 
-[node name="MiningLaser" parent="Camera3D/WeaponMount" instance=ExtResource("10_laser")]
+[node name="MiningLaser" parent="Camera3D/WeaponMount" unique_id=648974828 instance=ExtResource("10_laser")]
 
 [node name="StateChart" type="Node" parent="." unique_id=678193400]
 script = ExtResource("5_sc")
 
-[node name="PlayerStates" type="Node" parent="StateChart" unique_id=1091117235]
+[node name="Root" type="Node" parent="StateChart" unique_id=1091117235]
 script = ExtResource("6_cs")
 initial_state = NodePath("Idle")
 
-[node name="Idle" type="Node" parent="StateChart/PlayerStates" unique_id=1902493985]
+[node name="Idle" type="Node" parent="StateChart/Root" unique_id=1902493985]
 script = ExtResource("7_as")
 
-[node name="ToWalking" type="Node" parent="StateChart/PlayerStates/Idle" unique_id=708514019]
+[node name="ToWalking" type="Node" parent="StateChart/Root/Idle" unique_id=708514019]
 script = ExtResource("8_tr")
 to = NodePath("../Walking")
 event = &"started_moving"
 delay_in_seconds = "0.0"
 
-[node name="ToSprinting" type="Node" parent="StateChart/PlayerStates/Idle" unique_id=1813715341]
+[node name="ToSprinting" type="Node" parent="StateChart/Root/Idle" unique_id=1813715341]
 script = ExtResource("8_tr")
 to = NodePath("../Sprinting")
 event = &"started_sprinting"
 delay_in_seconds = "0.0"
 
-[node name="Walking" type="Node" parent="StateChart/PlayerStates" unique_id=1287350550]
+[node name="Walking" type="Node" parent="StateChart/Root" unique_id=1287350550]
 script = ExtResource("7_as")
 
-[node name="ToIdle" type="Node" parent="StateChart/PlayerStates/Walking" unique_id=1411355245]
+[node name="ToIdle" type="Node" parent="StateChart/Root/Walking" unique_id=1411355245]
 script = ExtResource("8_tr")
 to = NodePath("../Idle")
 event = &"stopped_moving"
 delay_in_seconds = "0.0"
 
-[node name="ToSprinting" type="Node" parent="StateChart/PlayerStates/Walking" unique_id=709925171]
+[node name="ToSprinting" type="Node" parent="StateChart/Root/Walking" unique_id=709925171]
 script = ExtResource("8_tr")
 to = NodePath("../Sprinting")
 event = &"started_sprinting"
 delay_in_seconds = "0.0"
 
-[node name="Sprinting" type="Node" parent="StateChart/PlayerStates" unique_id=879351241]
+[node name="Sprinting" type="Node" parent="StateChart/Root" unique_id=879351241]
 script = ExtResource("7_as")
 
-[node name="ToWalking" type="Node" parent="StateChart/PlayerStates/Sprinting" unique_id=544150837]
+[node name="ToWalking" type="Node" parent="StateChart/Root/Sprinting" unique_id=544150837]
 script = ExtResource("8_tr")
 to = NodePath("../Walking")
 event = &"stopped_sprinting"
 delay_in_seconds = "0.0"
 
-[node name="ToIdle" type="Node" parent="StateChart/PlayerStates/Sprinting" unique_id=572327007]
+[node name="ToIdle" type="Node" parent="StateChart/Root/Sprinting" unique_id=572327007]
 script = ExtResource("8_tr")
 to = NodePath("../Idle")
 event = &"stopped_moving"
 delay_in_seconds = "0.0"
 
-[node name="Dead" type="Node" parent="StateChart/PlayerStates" unique_id=642158347]
+[node name="Dead" type="Node" parent="StateChart/Root" unique_id=642158347]
 script = ExtResource("7_as")
 
 [node name="StateMachine" type="Node" parent="." unique_id=2115728744]
+script = ExtResource("11_qdo3w")
+
+[node name="WalkingState" type="Node" parent="StateMachine" unique_id=783558277]
+script = ExtResource("11_iuwj5")
+
+[node name="SprintingState" type="Node" parent="StateMachine" unique_id=233514055]
+script = ExtResource("13_b0bri")
+
+[node name="DeadState" type="Node" parent="StateMachine" unique_id=1334973479]
+script = ExtResource("14_64mjj")

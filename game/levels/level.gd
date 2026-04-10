@@ -1,3 +1,5 @@
 extends Node3D
 class_name Level
-#class for inheritance - all levels extend from this class
+
+# Routed up from PlayerInventory → PlayerController → Level → GameRoot → HUD
+signal resource_count_changed(type: ResourceType.Type, count: int)
