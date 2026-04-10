@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bl7ikkbwfarm8"]
+
+[ext_resource type="Script" uid="uid://b8elvlkjuinhf" path="res://game/levels/debug_level/debug_level.gd" id="1_d0ove"]
+
+[node name="DebugLevel" type="Node3D" unique_id=1612405713]
+script = ExtResource("1_d0ove")

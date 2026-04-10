@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://deriyd7v3fm66"]
+
+[ext_resource type="Script" uid="uid://ba3l1ew6hia4h" path="res://game/game_root.gd" id="1_hup1c"]
+
+[node name="GameRoot" type="Node3D" unique_id=272582753]
+script = ExtResource("1_hup1c")

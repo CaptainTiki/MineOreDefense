@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wc -l /d/Godot/REPOs/MineOreDefense/addons/godot_state_charts/*.gd)"
+    ]
+  }
+}
