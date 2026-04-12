@@ -7,6 +7,9 @@ func _ready() -> void:
 	var player: PlayerController = PlayerPrefabs.player_scene.instantiate()
 	player.global_position = player_spawn.global_position
 	add_child(player)
+	GameData.instance.player_inventory = player.inventory
+	GameData.instance.build_inventory = player.build_inventory
+	GameData.instance.set_hotbar(player.hotbar)
 	player.resource_count_changed.connect(_on_resource_count_changed)
 
 func _on_resource_count_changed(type: ResourceType.Type, count: int) -> void:

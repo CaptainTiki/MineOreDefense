@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RecipeData" format=3]
+
+[ext_resource type="Script" path="res://resources/recipes/recipe_data.gd" id="1_rd"]
+
+[resource]
+script = ExtResource("1_rd")
+display_name = "Generator"
+description = "Powers turrets and shields. Runs hot. Do not stand near. (This is not a suggestion.)"
+cost_ore = 0
+cost_limestone = 6
+cost_crystals = 0

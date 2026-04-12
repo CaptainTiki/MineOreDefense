@@ -1,0 +1,13 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/actors/weapons/build_tool/build_ghost.gd" id="1_bg"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_001"]
+size = Vector3(1.0, 2.0, 0.2)
+
+[node name="BuildGhost" type="Node3D" node_paths=PackedStringArray("mesh_instance")]
+script = ExtResource("1_bg")
+mesh_instance = NodePath("MeshInstance3D")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_001")

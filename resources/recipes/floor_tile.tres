@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RecipeData" format=3]
+
+[ext_resource type="Script" path="res://resources/recipes/recipe_data.gd" id="1_rd"]
+
+[resource]
+script = ExtResource("1_rd")
+display_name = "Floor Tile"
+description = "Flat ground covering. MineOre Corp is not liable for alien soil instability."
+cost_ore = 3
+cost_limestone = 0
+cost_crystals = 0

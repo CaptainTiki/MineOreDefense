@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bnfdplksch5ie"]
+
+[ext_resource type="Script" uid="uid://d4ic3xrx6q71o" path="res://game/components/player/camera_controller.gd" id="1_x7i2y"]
+
+[node name="CameraController" type="Node3D" unique_id=1012868424]
+script = ExtResource("1_x7i2y")

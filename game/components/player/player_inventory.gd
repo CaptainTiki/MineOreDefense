@@ -18,3 +18,9 @@ func add_resource(type: ResourceType.Type, amount: int) -> void:
 
 func get_count(type: ResourceType.Type) -> int:
 	return _resources[type] as int
+
+func remove_resource(type: ResourceType.Type, amount: int) -> void:
+	var current: int = _resources[type] as int
+	_resources[type] = max(0, current - amount)
+	var new_count: int = _resources[type] as int
+	inventory_changed.emit(type, new_count)

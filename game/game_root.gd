@@ -26,5 +26,10 @@ func unload_level() -> void:
 	_active_level.queue_free()
 	_active_level = null
 
+## Adds a block to the active level so it is cleaned up when the level unloads.
+func place_block(block: Node3D) -> void:
+	if _active_level != null:
+		_active_level.add_child(block)
+
 func _on_resource_count_changed(type: ResourceType.Type, count: int) -> void:
 	_hud.update_resource(type, count)

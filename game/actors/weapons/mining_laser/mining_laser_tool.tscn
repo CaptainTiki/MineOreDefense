@@ -1,0 +1,82 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/actors/weapons/mining_laser/mining_laser_tool.gd" id="1_mlt"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/state_chart.gd" id="2_sc"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/compound_state.gd" id="3_cs"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/atomic_state.gd" id="4_as"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/transition.gd" id="5_tr"]
+[ext_resource type="Script" path="res://game/components/weapons/weapon_state_machine.gd" id="6_wsm"]
+[ext_resource type="Script" path="res://game/actors/weapons/mining_laser/states/laser_idle_state.gd" id="7_lis"]
+[ext_resource type="Script" path="res://game/actors/weapons/mining_laser/states/laser_firing_state.gd" id="8_lfs"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_001"]
+size = Vector3(0.02, 0.02, 1.0)
+
+[sub_resource type="StandardMaterial3D" id="LaserMat_001"]
+albedo_color = Color(0.0, 1.0, 0.9, 1.0)
+emission_enabled = true
+emission = Color(0.0, 1.0, 0.9, 1.0)
+emission_energy_multiplier = 3.0
+
+[node name="MiningLaserTool" type="Node3D" node_paths=PackedStringArray("state_chart")]
+script = ExtResource("1_mlt")
+weapon_name = "Mining Laser"
+state_chart = NodePath("StateChart")
+dps = 25.0
+max_range = 10.0
+
+[node name="LaserRay" type="RayCast3D" parent="."]
+target_position = Vector3(0, 0, -10)
+enabled = true
+
+[node name="BeamVisual" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("BoxMesh_001")
+surface_material_override/0 = SubResource("LaserMat_001")
+
+[node name="StateChart" type="Node" parent="."]
+script = ExtResource("2_sc")
+metadata/_custom_type_script = "res://addons/godot_state_charts/state_chart.gd"
+
+[node name="Root" type="Node" parent="StateChart"]
+script = ExtResource("3_cs")
+initial_state = NodePath("Idle")
+metadata/_custom_type_script = "res://addons/godot_state_charts/compound_state.gd"
+
+[node name="Idle" type="Node" parent="StateChart/Root"]
+script = ExtResource("4_as")
+metadata/_custom_type_script = "res://addons/godot_state_charts/atomic_state.gd"
+
+[node name="OnFire" type="Node" parent="StateChart/Root/Idle"]
+script = ExtResource("5_tr")
+to = NodePath("../../Firing")
+event = &"onFire"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "res://addons/godot_state_charts/transition.gd"
+
+[node name="Firing" type="Node" parent="StateChart/Root"]
+script = ExtResource("4_as")
+metadata/_custom_type_script = "res://addons/godot_state_charts/atomic_state.gd"
+
+[node name="OnFireReleased" type="Node" parent="StateChart/Root/Firing"]
+script = ExtResource("5_tr")
+to = NodePath("../../Idle")
+event = &"onFireReleased"
+delay_in_seconds = "0.0"
+metadata/_custom_type_script = "res://addons/godot_state_charts/transition.gd"
+
+[node name="WeaponStateMachine" type="Node" parent="." node_paths=PackedStringArray("weapon")]
+unique_name_in_owner = true
+script = ExtResource("6_wsm")
+weapon = NodePath("..")
+
+[node name="IdleState" type="Node" parent="WeaponStateMachine"]
+script = ExtResource("7_lis")
+
+[node name="FiringState" type="Node" parent="WeaponStateMachine"]
+script = ExtResource("8_lfs")
+
+[connection signal="state_physics_processing" from="StateChart/Root/Idle" to="WeaponStateMachine/IdleState" method="_on_idle_state_physics_processing"]
+[connection signal="state_entered" from="StateChart/Root/Firing" to="WeaponStateMachine/FiringState" method="_on_firing_state_entered"]
+[connection signal="state_physics_processing" from="StateChart/Root/Firing" to="WeaponStateMachine/FiringState" method="_on_firing_state_physics_processing"]
+[connection signal="state_exited" from="StateChart/Root/Firing" to="WeaponStateMachine/FiringState" method="_on_firing_state_exited"]

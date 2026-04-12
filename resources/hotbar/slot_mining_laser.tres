@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="HotbarSlotData" format=3]
+
+[ext_resource type="Script" path="res://resources/hotbar/hotbar_slot_data.gd" id="1_hsd"]
+[ext_resource type="PackedScene" path="res://game/actors/weapons/mining_laser/mining_laser_tool.tscn" id="2_mlt"]
+
+[resource]
+script = ExtResource("1_hsd")
+slot_type = 1
+display_name = "Mining Laser"
+weapon_scene = ExtResource("2_mlt")

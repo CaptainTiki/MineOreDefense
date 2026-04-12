@@ -4,6 +4,9 @@
 [ext_resource type="PackedScene" path="res://ui/game_hud/resource_counter_panel.tscn" id="2_rcp"]
 [ext_resource type="PackedScene" path="res://ui/game_hud/wave_info_panel.tscn" id="3_wip"]
 [ext_resource type="PackedScene" path="res://ui/game_hud/core_pod_health_bar.tscn" id="4_cpb"]
+[ext_resource type="PackedScene" path="res://ui/game_hud/hotbar_panel/hotbar_panel.tscn" id="5_hbp"]
+[ext_resource type="PackedScene" path="res://ui/game_hud/inventory_panel/inventory_panel.tscn" id="6_invp"]
+[ext_resource type="PackedScene" path="res://ui/game_hud/block_info_panel/block_info_panel.tscn" id="7_bip"]
 
 [node name="GameHud" type="CanvasLayer"]
 layer = 10
@@ -19,3 +22,9 @@ mouse_filter = 2
 [node name="WaveInfoPanel" parent="HudContainer" instance=ExtResource("3_wip")]
 
 [node name="CorePodHealthBar" parent="HudContainer" instance=ExtResource("4_cpb")]
+
+[node name="HotbarPanel" parent="HudContainer" instance=ExtResource("5_hbp")]
+
+[node name="InventoryPanel" parent="HudContainer" instance=ExtResource("6_invp")]
+
+[node name="BlockInfoPanel" parent="HudContainer" instance=ExtResource("7_bip")]

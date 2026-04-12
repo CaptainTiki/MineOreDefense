@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RecipeData" format=3]
+
+[ext_resource type="Script" path="res://resources/recipes/recipe_data.gd" id="1_rd"]
+
+[resource]
+script = ExtResource("1_rd")
+display_name = "Basic Turret"
+description = "Auto-targeting ballistic unit. Accuracy not guaranteed. Friendly fire waived in contract."
+cost_ore = 8
+cost_limestone = 4
+cost_crystals = 0

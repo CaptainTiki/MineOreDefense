@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://hu6hy4pvd0nk"]
+
+[ext_resource type="Script" uid="uid://cpuxt6fa57g6r" path="res://game/components/player/mouse_capture.gd" id="1_coo0a"]
+
+[node name="MouseCapture" type="Node3D" unique_id=504040605]
+script = ExtResource("1_coo0a")

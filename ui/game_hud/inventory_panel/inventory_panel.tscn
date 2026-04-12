@@ -1,0 +1,82 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://ui/game_hud/inventory_panel/inventory_panel.gd" id="1_ip"]
+
+[sub_resource type="StyleBoxFlat" id="PanelStyle_001"]
+bg_color = Color(0.07, 0.08, 0.11, 0.96)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.0, 0.5, 1.0, 0.7)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 20.0
+content_margin_top = 16.0
+content_margin_right = 20.0
+content_margin_bottom = 16.0
+
+[node name="InventoryPanel" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("1_ip")
+
+[node name="Anchor" type="Control" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -250.0
+offset_right = 200.0
+offset_bottom = 250.0
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="Anchor"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("PanelStyle_001")
+
+[node name="VBox" type="VBoxContainer" parent="Anchor/Panel"]
+theme_override_constants/separation = 10
+
+[node name="TitleRow" type="HBoxContainer" parent="Anchor/Panel/VBox"]
+
+[node name="Title" type="Label" parent="Anchor/Panel/VBox/TitleRow"]
+size_flags_horizontal = 3
+text = "BUILD INVENTORY"
+theme_override_font_sizes/font_size = 15
+
+[node name="HintLabel" type="Label" parent="Anchor/Panel/VBox/TitleRow"]
+text = "[TAB] Close"
+horizontal_alignment = 2
+theme_override_font_sizes/font_size = 11
+modulate = Color(0.5, 0.5, 0.5, 1.0)
+
+[node name="HSep" type="HSeparator" parent="Anchor/Panel/VBox"]
+
+[node name="EmptyLabel" type="Label" parent="Anchor/Panel/VBox"]
+visible = false
+text = "Nothing crafted yet.\nUse a Fabricator to build items."
+horizontal_alignment = 1
+autowrap_mode = 3
+modulate = Color(0.6, 0.6, 0.6, 1.0)
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Anchor/Panel/VBox"]
+size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 300)
+
+[node name="ItemList" type="VBoxContainer" parent="Anchor/Panel/VBox/ScrollContainer"]
+size_flags_horizontal = 3
+theme_override_constants/separation = 3
+
+[node name="HSep2" type="HSeparator" parent="Anchor/Panel/VBox"]
+
+[node name="FooterLabel" type="Label" parent="Anchor/Panel/VBox"]
+text = "Drag items to hotbar slots below"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 11
+modulate = Color(0.5, 0.6, 0.5, 1.0)
