@@ -24,6 +24,10 @@ func alt_fire() -> void:
 	if state_chart != null:
 		state_chart.send_event("onAltFire")
 
+func alt_fire_released() -> void:
+	if state_chart != null:
+		state_chart.send_event("onAltFireReleased")
+
 func reload() -> void:
 	if state_chart != null:
 		state_chart.send_event("onReload")

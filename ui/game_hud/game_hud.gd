@@ -6,6 +6,16 @@ class_name GameHud
 @onready var _hotbar_panel: HotbarPanel = $HudContainer/HotbarPanel
 @onready var _inventory_panel: InventoryPanel = $HudContainer/InventoryPanel
 @onready var _block_info_panel: BlockInfoPanel = $HudContainer/BlockInfoPanel
+@onready var _core_pod_health_bar: CorePodHealthBar = $HudContainer/CorePodHealthBar
 
 func update_resource(type: ResourceType.Type, count: int) -> void:
 	_resource_panel.update_count(type, count)
+
+func update_core_pod_health(pct: float) -> void:
+	_core_pod_health_bar.set_health_percent(pct)
+
+func update_wave_phase(phase_name: String) -> void:
+	_wave_panel.set_phase(phase_name)
+
+func update_wave_day(day: int) -> void:
+	_wave_panel.set_day(day)

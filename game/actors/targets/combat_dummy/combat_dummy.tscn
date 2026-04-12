@@ -1,0 +1,37 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/actors/targets/combat_dummy/combat_dummy.gd" id="1_cd"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_collision"]
+height = 2.2
+radius = 0.45
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_body"]
+top_radius = 0.38
+bottom_radius = 0.5
+height = 2.2
+
+[sub_resource type="StandardMaterial3D" id="Mat_dummy_healthy"]
+albedo_color = Color(0.32, 0.62, 0.35, 1)
+roughness = 0.7
+
+[sub_resource type="StandardMaterial3D" id="Mat_dummy_hit"]
+albedo_color = Color(1, 0.38, 0.22, 1)
+emission_enabled = true
+emission = Color(1, 0.34, 0.18, 1)
+emission_energy_multiplier = 2.5
+
+[node name="CombatDummy" type="StaticBody3D" node_paths=PackedStringArray("mesh_instance")]
+script = ExtResource("1_cd")
+mesh_instance = NodePath("MeshInstance3D")
+healthy_material = SubResource("Mat_dummy_healthy")
+hit_material = SubResource("Mat_dummy_hit")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+shape = SubResource("CylinderShape3D_collision")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+mesh = SubResource("CylinderMesh_body")
+surface_material_override/0 = SubResource("Mat_dummy_healthy")

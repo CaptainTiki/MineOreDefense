@@ -17,6 +17,8 @@ func start_game() -> void:
 	_in_game = true
 	menu_manager.hide_current_menu()
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	if not game_root.game_over_triggered.is_connected(show_game_over):
+		game_root.game_over_triggered.connect(show_game_over)
 	var level: Level = LevelPrefabs.debug_level_scene.instantiate()
 	game_root.load_level(level)
 
@@ -37,4 +39,8 @@ func resume_from_pause() -> void:
 	menu_manager.hide_current_menu()
 
 func show_game_over() -> void:
-	pass # Wired in Phase 7
+	_in_game = false
+	get_tree().paused = false
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	game_root.unload_level()
+	menu_manager.show_menu(Menu.Type.MAIN)

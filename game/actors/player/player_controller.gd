@@ -49,6 +49,7 @@ func _ready() -> void:
 	weapon_mount.resource_gathered.connect(_on_resource_gathered)
 	inventory.inventory_changed.connect(_on_inventory_changed)
 	hotbar.active_slot_changed.connect(_on_active_slot_changed)
+	hotbar.set_active(hotbar.get_active_index())
 
 func _physics_process(delta: float) -> void:
 	# Apply gravity regardless of menu state
@@ -66,8 +67,12 @@ func _physics_process(delta: float) -> void:
 		# Weapon fire
 		if Input.is_action_just_pressed("fire"):
 			weapon_mount.fire()
+		if Input.is_action_just_released("fire"):
+			weapon_mount.fire_released()
 		if Input.is_action_just_pressed("secondary_fire"):
 			weapon_mount.alt_fire()
+		if Input.is_action_just_released("secondary_fire"):
+			weapon_mount.alt_fire_released()
 
 		# Interact
 		if Input.is_action_just_pressed("interact") and _interaction_ray.is_colliding():

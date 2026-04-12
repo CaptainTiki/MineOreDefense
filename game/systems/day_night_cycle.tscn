@@ -1,0 +1,53 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/systems/day_night_cycle.gd" id="1_dnc"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_sun"]
+radius = 20.0
+height = 40.0
+radial_segments = 16
+rings = 8
+
+[sub_resource type="StandardMaterial3D" id="SunMat_001"]
+shading_mode = 2
+albedo_color = Color(1.0, 0.95, 0.7, 1.0)
+emission_enabled = true
+emission = Color(1.0, 0.92, 0.70, 1.0)
+emission_energy_multiplier = 8.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_moon"]
+radius = 17.0
+height = 34.0
+radial_segments = 16
+rings = 8
+
+[sub_resource type="StandardMaterial3D" id="MoonMat_001"]
+shading_mode = 2
+albedo_color = Color(0.85, 0.90, 1.0, 1.0)
+emission_enabled = true
+emission = Color(0.70, 0.82, 1.0, 1.0)
+emission_energy_multiplier = 0.0
+
+[node name="DayNightCycle" type="Node3D"]
+script = ExtResource("1_dnc")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+shadow_enabled = true
+light_energy = 1.2
+light_color = Color(1, 0.97, 0.88, 1)
+directional_shadow_max_distance = 150.0
+
+[node name="Moon" type="DirectionalLight3D" parent="."]
+visible = false
+light_energy = 0.0
+light_color = Color(0.6, 0.72, 1.0, 1)
+shadow_enabled = false
+
+[node name="SunDisc" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_sun")
+surface_material_override/0 = SubResource("SunMat_001")
+
+[node name="MoonDisc" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("SphereMesh_moon")
+surface_material_override/0 = SubResource("MoonMat_001")

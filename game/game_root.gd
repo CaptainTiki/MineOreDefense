@@ -1,6 +1,9 @@
 extends Node3D
 class_name GameRoot
 
+## Emitted when the CorePod is destroyed — Main connects to trigger game over.
+signal game_over_triggered()
+
 static var instance: GameRoot
 
 var _active_level: Level = null
@@ -16,6 +19,10 @@ func load_level(level: Level) -> void:
 		unload_level()
 	_active_level = level
 	level.resource_count_changed.connect(_on_resource_count_changed)
+	level.core_pod_health_changed.connect(_on_core_pod_health_changed)
+	level.core_pod_destroyed.connect(_on_core_pod_destroyed)
+	level.phase_changed.connect(_on_phase_changed)
+	level.day_changed.connect(_on_day_changed)
 	add_child(level)
 	_hud.show()
 
@@ -33,3 +40,15 @@ func place_block(block: Node3D) -> void:
 
 func _on_resource_count_changed(type: ResourceType.Type, count: int) -> void:
 	_hud.update_resource(type, count)
+
+func _on_core_pod_health_changed(pct: float) -> void:
+	_hud.update_core_pod_health(pct)
+
+func _on_core_pod_destroyed() -> void:
+	game_over_triggered.emit()
+
+func _on_phase_changed(phase: int) -> void:
+	_hud.update_wave_phase(DayNightCycle.phase_label(phase as DayNightCycle.Phase))
+
+func _on_day_changed(day: int) -> void:
+	_hud.update_wave_day(day)

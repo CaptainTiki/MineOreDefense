@@ -1,0 +1,84 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/actors/weapons/assault_rifle/assault_rifle.gd" id="1_ar"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_body"]
+size = Vector3(0.12, 0.12, 0.8)
+
+[sub_resource type="BoxMesh" id="BoxMesh_barrel"]
+size = Vector3(0.03, 0.03, 0.7)
+
+[sub_resource type="BoxMesh" id="BoxMesh_tracer"]
+size = Vector3(0.02, 0.02, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_flash"]
+radius = 0.05
+height = 0.12
+
+[sub_resource type="SphereMesh" id="SphereMesh_impact"]
+radius = 0.07
+height = 0.14
+
+[sub_resource type="StandardMaterial3D" id="Mat_body"]
+albedo_color = Color(0.16, 0.18, 0.2, 1)
+roughness = 0.65
+
+[sub_resource type="StandardMaterial3D" id="Mat_barrel"]
+albedo_color = Color(0.08, 0.09, 0.1, 1)
+metallic = 0.7
+roughness = 0.3
+
+[sub_resource type="StandardMaterial3D" id="Mat_tracer"]
+albedo_color = Color(1, 0.82, 0.35, 1)
+emission_enabled = true
+emission = Color(1, 0.74, 0.18, 1)
+emission_energy_multiplier = 4
+
+[sub_resource type="StandardMaterial3D" id="Mat_flash"]
+albedo_color = Color(1, 0.9, 0.45, 1)
+emission_enabled = true
+emission = Color(1, 0.8, 0.3, 1)
+emission_energy_multiplier = 5
+
+[sub_resource type="StandardMaterial3D" id="Mat_impact"]
+albedo_color = Color(1, 0.45, 0.2, 1)
+emission_enabled = true
+emission = Color(1, 0.45, 0.2, 1)
+emission_energy_multiplier = 3
+
+[node name="AssaultRifle" type="Node3D"]
+script = ExtResource("1_ar")
+weapon_name = "Assault Rifle"
+hip_local_position = Vector3(0, 0, 0)
+ads_local_position = Vector3(-0.08, 0.05, 0.18)
+
+[node name="WeaponMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, -0.03, -0.4)
+mesh = SubResource("BoxMesh_body")
+surface_material_override/0 = SubResource("Mat_body")
+
+[node name="BarrelMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, -0.02, -0.83)
+mesh = SubResource("BoxMesh_barrel")
+surface_material_override/0 = SubResource("Mat_barrel")
+
+[node name="MuzzlePoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, -0.02, -1.18)
+
+[node name="MuzzleFlash" type="MeshInstance3D" parent="."]
+visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, -0.02, -1.12)
+mesh = SubResource("SphereMesh_flash")
+surface_material_override/0 = SubResource("Mat_flash")
+
+[node name="Tracer" type="MeshInstance3D" parent="."]
+visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, -0.02, -0.5)
+mesh = SubResource("BoxMesh_tracer")
+surface_material_override/0 = SubResource("Mat_tracer")
+
+[node name="ImpactFlash" type="MeshInstance3D" parent="."]
+visible = false
+top_level = true
+mesh = SubResource("SphereMesh_impact")
+surface_material_override/0 = SubResource("Mat_impact")

@@ -6,6 +6,7 @@ signal slot_updated(slot_index: int, slot: HotbarSlotData)
 
 const SLOT_COUNT: int = 6
 const DEFAULT_SLOT_PATHS: Array[String] = [
+	"res://resources/hotbar/slot_assault_rifle.tres",
 	"res://resources/hotbar/slot_mining_laser.tres",
 	"res://resources/hotbar/slot_build_tool.tres",
 ]

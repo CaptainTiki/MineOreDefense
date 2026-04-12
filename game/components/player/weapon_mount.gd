@@ -39,6 +39,10 @@ func alt_fire() -> void:
 	if _current_weapon != null:
 		_current_weapon.alt_fire()
 
+func alt_fire_released() -> void:
+	if _current_weapon != null:
+		_current_weapon.alt_fire_released()
+
 func reload() -> void:
 	if _current_weapon != null:
 		_current_weapon.reload()

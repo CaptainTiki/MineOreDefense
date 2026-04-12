@@ -1,0 +1,27 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/actors/blocks/core_pod/core_pod.gd" id="1_cpod"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_001"]
+size = Vector3(2.0, 2.0, 2.0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_001"]
+size = Vector3(2.0, 2.0, 2.0)
+
+[sub_resource type="StandardMaterial3D" id="CoreMat_001"]
+albedo_color = Color(0.9, 0.5, 0.1, 1.0)
+emission_enabled = true
+emission = Color(1.0, 0.6, 0.0, 1.0)
+emission_energy_multiplier = 1.5
+
+[node name="CorePod" type="StaticBody3D" node_paths=PackedStringArray("mesh_instance")]
+script = ExtResource("1_cpod")
+max_hp = 500
+mesh_instance = NodePath("MeshInstance3D")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_001")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_001")
+surface_material_override/0 = SubResource("CoreMat_001")
