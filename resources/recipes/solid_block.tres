@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RecipeData" format=3]
+
+[ext_resource type="Script" path="res://resources/recipes/recipe_data.gd" id="1_rd"]
+
+[resource]
+script = ExtResource("1_rd")
+display_name = "Solid Block"
+description = "General-purpose structural cube for foundations, walls, and filler."
+cost_ore = 4
+cost_limestone = 1
+cost_crystals = 0

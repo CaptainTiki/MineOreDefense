@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BuildDefinition" format=3]
+
+[ext_resource type="Script" path="res://resources/build_definition.gd" id="1_def"]
+[ext_resource type="Resource" path="res://resources/recipes/armored_half_block.tres" id="2_recipe"]
+[ext_resource type="PackedScene" path="res://game/actors/blocks/armored_half_corner_slope_block/armored_half_corner_slope_block.tscn" id="3_scene"]
+
+[resource]
+script = ExtResource("1_def")
+display_name = "Armored Half Corner Slope Block"
+recipe = ExtResource("2_recipe")
+block_scene = ExtResource("3_scene")
+footprint_cells = [Vector3i(0, 0, 0)]
+preview_size = Vector3(1, 0.5, 1)
+preview_offset = Vector3(0, -0.25, 0)

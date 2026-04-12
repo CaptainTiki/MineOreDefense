@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RecipeData" format=3]
+
+[ext_resource type="Script" path="res://resources/recipes/recipe_data.gd" id="1_rd"]
+
+[resource]
+script = ExtResource("1_rd")
+display_name = "Doorway Wall"
+description = "Two-meter doorway frame for enclosed rooms and proper base access."
+cost_ore = 6
+cost_limestone = 2
+cost_crystals = 0

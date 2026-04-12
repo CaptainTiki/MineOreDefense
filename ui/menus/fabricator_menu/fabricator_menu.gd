@@ -2,10 +2,10 @@ extends Menu
 class_name FabricatorMenu
 
 const RECIPE_PATHS: Array[String] = [
-	"res://resources/recipes/wall_segment.tres",
-	"res://resources/recipes/floor_tile.tres",
-	"res://resources/recipes/basic_turret.tres",
-	"res://resources/recipes/generator.tres",
+	"res://resources/recipes/concrete_block.tres",
+	"res://resources/recipes/armor_block.tres",
+	"res://resources/recipes/half_block.tres",
+	"res://resources/recipes/armored_half_block.tres",
 ]
 const ROW_SCENE: String = "res://ui/menus/fabricator_menu/recipe_row.tscn"
 

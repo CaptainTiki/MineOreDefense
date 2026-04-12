@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://cn2cud8dka04f"]
+
+[ext_resource type="Script" uid="uid://cpba2rg6erlvy" path="res://game/actors/blocks/visual_block.gd" id="1_block"]
+[ext_resource type="Resource" path="res://resources/recipes/armored_half_block.tres" id="2_recipe"]
+
+[sub_resource type="StandardMaterial3D" id="FrameMat_001"]
+transparency = 1
+cull_mode = 2
+albedo_color = Color(0.4, 0.65, 0.9, 0.35)
+
+[sub_resource type="StandardMaterial3D" id="FullMat_001"]
+albedo_color = Color(0.31, 0.35, 0.41, 1)
+metallic = 0.35
+roughness = 0.45
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_001"]
+size = Vector3(1, 0.5, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_001"]
+size = Vector3(1, 0.5, 1)
+
+[node name="ArmoredHalfBlock" type="StaticBody3D" unique_id=788284495 node_paths=PackedStringArray("mesh_instance")]
+script = ExtResource("1_block")
+mesh_instance = NodePath("MeshInstance3D")
+frame_material = SubResource("FrameMat_001")
+full_material = SubResource("FullMat_001")
+max_hp = 140
+recipe = ExtResource("2_recipe")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=622483798]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+shape = SubResource("BoxShape3D_001")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1974553827]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+mesh = SubResource("BoxMesh_001")
+surface_material_override/0 = SubResource("FrameMat_001")

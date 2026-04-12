@@ -1,0 +1,2 @@
+extends VisualBlock
+class_name FloorTileBlock

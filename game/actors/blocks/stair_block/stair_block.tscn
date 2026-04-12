@@ -1,0 +1,69 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/actors/blocks/composite_block.gd" id="1_block"]
+[ext_resource type="Resource" path="res://resources/recipes/stair_block.tres" id="2_recipe"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_001"]
+size = Vector3(1, 0.333, 0.333)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_002"]
+size = Vector3(1, 0.666, 0.333)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_003"]
+size = Vector3(1, 1, 0.333)
+
+[sub_resource type="BoxMesh" id="BoxMesh_001"]
+size = Vector3(1, 0.333, 0.333)
+
+[sub_resource type="BoxMesh" id="BoxMesh_002"]
+size = Vector3(1, 0.666, 0.333)
+
+[sub_resource type="BoxMesh" id="BoxMesh_003"]
+size = Vector3(1, 1, 0.333)
+
+[sub_resource type="StandardMaterial3D" id="FrameMat_001"]
+transparency = 1
+albedo_color = Color(0.4, 0.65, 0.9, 0.35)
+shading_mode = 1
+cull_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="FullMat_001"]
+albedo_color = Color(0.5, 0.5, 0.55, 1)
+roughness = 0.75
+
+[node name="StairBlock" type="StaticBody3D"]
+script = ExtResource("1_block")
+max_hp = 90
+recipe = ExtResource("2_recipe")
+build_size = Vector3(1, 1, 1)
+occupied_cells = [Vector3i(0, 0, 0)]
+mesh_nodes = [NodePath("StepA"), NodePath("StepB"), NodePath("StepC")]
+frame_material = SubResource("FrameMat_001")
+full_material = SubResource("FullMat_001")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3335, 0.3335)
+shape = SubResource("BoxShape3D_001")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.167, 0)
+shape = SubResource("BoxShape3D_002")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.3335)
+shape = SubResource("BoxShape3D_003")
+
+[node name="StepA" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3335, 0.3335)
+mesh = SubResource("BoxMesh_001")
+surface_material_override/0 = SubResource("FrameMat_001")
+
+[node name="StepB" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.167, 0)
+mesh = SubResource("BoxMesh_002")
+surface_material_override/0 = SubResource("FrameMat_001")
+
+[node name="StepC" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.3335)
+mesh = SubResource("BoxMesh_003")
+surface_material_override/0 = SubResource("FrameMat_001")

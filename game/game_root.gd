@@ -23,6 +23,7 @@ func load_level(level: Level) -> void:
 	level.core_pod_destroyed.connect(_on_core_pod_destroyed)
 	level.phase_changed.connect(_on_phase_changed)
 	level.day_changed.connect(_on_day_changed)
+	level.announcement_requested.connect(_on_announcement_requested)
 	add_child(level)
 	_hud.show()
 
@@ -38,6 +39,9 @@ func place_block(block: Node3D) -> void:
 	if _active_level != null:
 		_active_level.add_child(block)
 
+func get_active_level() -> Level:
+	return _active_level
+
 func _on_resource_count_changed(type: ResourceType.Type, count: int) -> void:
 	_hud.update_resource(type, count)
 
@@ -52,3 +56,6 @@ func _on_phase_changed(phase: int) -> void:
 
 func _on_day_changed(day: int) -> void:
 	_hud.update_wave_day(day)
+
+func _on_announcement_requested(text: String, duration: float) -> void:
+	_hud.show_announcement(text, duration)

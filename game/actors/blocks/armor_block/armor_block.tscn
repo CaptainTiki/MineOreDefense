@@ -1,0 +1,38 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/actors/blocks/visual_block.gd" id="1_block"]
+[ext_resource type="Resource" path="res://resources/recipes/armor_block.tres" id="2_recipe"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_001"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_001"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="FrameMat_001"]
+transparency = 1
+albedo_color = Color(0.4, 0.65, 0.9, 0.35)
+shading_mode = 1
+cull_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="FullMat_001"]
+albedo_color = Color(0.29, 0.33, 0.39, 1)
+metallic = 0.35
+roughness = 0.45
+
+[node name="ArmorBlock" type="StaticBody3D" node_paths=PackedStringArray("mesh_instance")]
+script = ExtResource("1_block")
+max_hp = 180
+recipe = ExtResource("2_recipe")
+build_size = Vector3(1, 1, 1)
+occupied_cells = [Vector3i(0, 0, 0)]
+mesh_instance = NodePath("MeshInstance3D")
+frame_material = SubResource("FrameMat_001")
+full_material = SubResource("FullMat_001")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_001")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_001")
+surface_material_override/0 = SubResource("FrameMat_001")

@@ -2,20 +2,18 @@ extends WeaponBase
 class_name BuildTool
 
 const GHOST_SCENE: String = "res://game/actors/weapons/build_tool/build_ghost.tscn"
-const CELL_SIZE: float = 1.0
 const BUILD_RANGE: float = 6.0
-## Y position of the wall's centre when placed on flat ground (half of 2 m height)
-const WALL_CENTER_Y: float = 1.0
 
 var _ghost: BuildGhost = null
 var _ghost_valid: bool = false
-var _ghost_rotation_y: float = 0.0
+var _ghost_basis: Basis = Basis.IDENTITY
+var _family_variant_indices: Dictionary = {}
 var _target_block: BlockBase = null
-## Collected once in _ready — excludes the player body from build raycasts
+var _target_definition: BuildDefinition = null
+var _target_root_cell: Vector3i = Vector3i.ZERO
 var _exclude_rids: Array[RID] = []
 
 func _ready() -> void:
-	## Walk up the scene tree and collect every PhysicsBody3D RID (player capsule etc.)
 	var node: Node = get_parent()
 	while node != null:
 		if node is PhysicsBody3D:
@@ -29,7 +27,7 @@ func _ready() -> void:
 
 func equip() -> void:
 	super.equip()
-	_ghost.hide()  ## update_build() controls visibility — never flash at origin
+	_ghost.hide()
 	_set_target_block(null)
 
 func unequip() -> void:
@@ -37,65 +35,113 @@ func unequip() -> void:
 	_ghost.hide()
 	_set_target_block(null)
 
-## Called every physics frame by BuildIdleState via the StateChart signal.
+func _unhandled_input(event: InputEvent) -> void:
+	if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
+		return
+
+	if event is InputEventKey:
+		var key_event: InputEventKey = event as InputEventKey
+		if not key_event.pressed or key_event.echo or key_event.alt_pressed:
+			return
+
+		var resolved_keycode: Key = key_event.physical_keycode if key_event.physical_keycode != 0 else key_event.keycode
+		match resolved_keycode:
+			KEY_LEFT:
+				_rotate_local(Vector3.UP, PI * 0.5)
+			KEY_RIGHT:
+				_rotate_local(Vector3.UP, -PI * 0.5)
+			KEY_UP:
+				_rotate_local(Vector3.RIGHT, -PI * 0.5)
+			KEY_DOWN:
+				_rotate_local(Vector3.RIGHT, PI * 0.5)
+			KEY_PAGEUP:
+				_rotate_local(Vector3.BACK, PI * 0.5)
+			KEY_PAGEDOWN:
+				_rotate_local(Vector3.BACK, -PI * 0.5)
+			_:
+				return
+		get_viewport().set_input_as_handled()
+		return
+
+	if not event is InputEventMouseButton:
+		return
+
+	var mouse_event: InputEventMouseButton = event as InputEventMouseButton
+	var alt_cycle_active: bool = mouse_event.alt_pressed or Input.is_key_pressed(KEY_ALT)
+	if not mouse_event.pressed or not alt_cycle_active:
+		return
+
+	var family_name: String = _get_active_block_name()
+	if family_name.is_empty():
+		return
+
+	if mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP:
+		_cycle_variant(family_name, -1)
+		get_viewport().set_input_as_handled()
+	elif mouse_event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+		_cycle_variant(family_name, 1)
+		get_viewport().set_input_as_handled()
+
 func update_build() -> void:
 	var camera: Camera3D = get_viewport().get_camera_3d()
-	if camera == null:
+	var level: Level = GameRoot.instance.get_active_level()
+	if camera == null or level == null:
 		return
 
 	var space: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
 	var from: Vector3 = camera.global_position
 	var to: Vector3 = from + (-camera.global_transform.basis.z * BUILD_RANGE)
-
 	var query: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(from, to)
 	query.exclude = _exclude_rids
 	var result: Dictionary = space.intersect_ray(query)
 
 	if result.is_empty():
+		_target_definition = null
 		_ghost.hide()
 		_set_target_block(null)
 		return
 
-	## Did we hit a placeable block we can repair?
+	var block_name: String = _get_active_block_name()
 	var collider: Object = result.get("collider", null)
 	var hit_block: BlockBase = collider as BlockBase
 	_set_target_block(hit_block)
 
-	if hit_block != null:
-		_ghost.hide()
-		return
-
-	## Only show ghost when a block type is actually selected in the hotbar
-	var block_name: String = _get_active_block_name()
 	if block_name.is_empty():
+		_target_definition = null
 		_ghost.hide()
 		return
 
-	## Terrain hit with a block selected — show placement ghost
+	var definition: BuildDefinition = BlockPrefabs.get_build_variant_definition(block_name, _get_variant_index(block_name))
+	if definition == null:
+		_target_definition = null
+		_ghost.hide()
+		return
+
 	var hit_pos: Vector3 = result.get("position", Vector3.ZERO) as Vector3
 	var hit_normal: Vector3 = result.get("normal", Vector3.UP) as Vector3
-	var snapped: Vector3 = _snap_position(hit_pos, hit_normal)
+	var root_cell: Vector3i = level.get_candidate_root_cell(hit_pos, hit_normal)
+	var yaw_steps: int = _get_yaw_steps()
+	var ghost_position: Vector3 = level.get_world_position_for_build(definition, root_cell, yaw_steps)
+	var rotation_basis: Basis = _get_preview_basis(definition)
 
-	_ghost_valid = not _overlaps_block(snapped, _ghost_rotation_y)
-	_ghost.global_position = snapped
-	_ghost.global_rotation = Vector3(0.0, _ghost_rotation_y, 0.0)
+	_target_definition = definition
+	_target_root_cell = root_cell
+	_ghost_valid = level.can_place_build(definition, root_cell, yaw_steps)
+	_ghost.set_definition(definition)
+	_ghost.set_size(definition.preview_size)
+	_ghost.global_position = ghost_position + (rotation_basis * definition.preview_offset)
+	_ghost.global_basis = rotation_basis
 	_ghost.set_valid(_ghost_valid)
 	_ghost.show()
 
-## Override — build tool handles fire directly; no StateChart firing state needed.
 func fire() -> void:
-	if _target_block != null:
-		_try_repair(_target_block)
-	elif _ghost_valid and _ghost != null and _ghost.visible:
+	if _ghost_valid and _ghost != null and _ghost.visible and _target_definition != null:
 		_try_place()
+	elif _target_block != null:
+		_try_repair(_target_block)
 
-## Alt-fire rotates the ghost (and future placed block) by 90 degrees.
 func alt_fire() -> void:
-	_ghost_rotation_y += PI / 2.0
-
-# ---------------------------------------------------------------------------
-# Private helpers
-# ---------------------------------------------------------------------------
+	pass
 
 func _set_target_block(block: BlockBase) -> void:
 	if block == _target_block:
@@ -112,24 +158,32 @@ func _get_active_block_name() -> String:
 	return slot.block_name
 
 func _try_place() -> void:
-	var block_name: String = _get_active_block_name()
-	if block_name.is_empty():
-		return
-
 	var build_inv: BuildInventory = GameData.instance.build_inventory
-	if build_inv == null or build_inv.get_count(block_name) <= 0:
+	var level: Level = GameRoot.instance.get_active_level()
+	if _target_definition == null or build_inv == null or level == null:
+		return
+	var family_name: String = _get_active_block_name()
+	if family_name.is_empty():
+		return
+	if build_inv.get_count(family_name) <= 0:
 		return
 
-	var block_scene: PackedScene = BlockPrefabs.get_scene_for_block(block_name)
-	if block_scene == null:
+	var yaw_steps: int = _get_yaw_steps()
+	if not level.can_place_build(_target_definition, _target_root_cell, yaw_steps):
 		return
 
-	build_inv.remove_item(block_name, 1)
+	var block: BlockBase = _target_definition.block_scene.instantiate() as BlockBase
+	if block == null:
+		return
 
-	var block: BlockBase = block_scene.instantiate() as BlockBase
+	var block_position: Vector3 = level.get_world_position_for_build(_target_definition, _target_root_cell, yaw_steps)
+	var block_basis: Basis = _get_preview_basis(_target_definition)
+
+	build_inv.remove_item(family_name, 1)
 	GameRoot.instance.place_block(block)
-	block.global_position = _ghost.global_position
-	block.global_rotation = Vector3(0.0, _ghost_rotation_y, 0.0)
+	block.global_position = block_position
+	block.global_basis = block_basis
+	level.register_placed_block(block, _target_definition, _target_root_cell, yaw_steps)
 
 func _try_repair(block: BlockBase) -> void:
 	if block.current_hp >= block.max_hp:
@@ -140,41 +194,69 @@ func _try_repair(block: BlockBase) -> void:
 	if inventory == null:
 		return
 
-	var ore_cost: int  = cost.get(ResourceType.Type.ORE,       0) as int
-	var lime_cost: int = cost.get(ResourceType.Type.LIMESTONE,  0) as int
-	var crys_cost: int = cost.get(ResourceType.Type.CRYSTALS,   0) as int
+	var ore_cost: int = cost.get(ResourceType.Type.ORE, 0) as int
+	var lime_cost: int = cost.get(ResourceType.Type.LIMESTONE, 0) as int
+	var crys_cost: int = cost.get(ResourceType.Type.CRYSTALS, 0) as int
 
-	if inventory.get_count(ResourceType.Type.ORE)       < ore_cost:  return
-	if inventory.get_count(ResourceType.Type.LIMESTONE)  < lime_cost: return
-	if inventory.get_count(ResourceType.Type.CRYSTALS)   < crys_cost: return
+	if inventory.get_count(ResourceType.Type.ORE) < ore_cost:
+		return
+	if inventory.get_count(ResourceType.Type.LIMESTONE) < lime_cost:
+		return
+	if inventory.get_count(ResourceType.Type.CRYSTALS) < crys_cost:
+		return
 
-	inventory.remove_resource(ResourceType.Type.ORE,       ore_cost)
-	inventory.remove_resource(ResourceType.Type.LIMESTONE,  lime_cost)
-	inventory.remove_resource(ResourceType.Type.CRYSTALS,   crys_cost)
+	inventory.remove_resource(ResourceType.Type.ORE, ore_cost)
+	inventory.remove_resource(ResourceType.Type.LIMESTONE, lime_cost)
+	inventory.remove_resource(ResourceType.Type.CRYSTALS, crys_cost)
 	block.apply_repair()
 
-## Returns true if a BlockBase already occupies the given snapped position.
-## Uses the same box dimensions as the wall so the check is pixel-perfect.
-func _overlaps_block(position: Vector3, rotation_y: float) -> bool:
-	var space: PhysicsDirectSpaceState3D = get_world_3d().direct_space_state
-	var shape: BoxShape3D = BoxShape3D.new()
-	shape.size = Vector3(1.0, 2.0, 0.2)
+func _rotate_global(axis: Vector3, angle: float) -> void:
+	_ghost_basis = (Basis(axis, angle) * _ghost_basis).orthonormalized()
 
-	var query: PhysicsShapeQueryParameters3D = PhysicsShapeQueryParameters3D.new()
-	query.shape = shape
-	query.transform = Transform3D(Basis.from_euler(Vector3(0.0, rotation_y, 0.0)), position)
-	query.exclude = _exclude_rids
+func _rotate_local(axis: Vector3, angle: float) -> void:
+	_ghost_basis = (_ghost_basis * Basis(axis, angle)).orthonormalized()
 
-	var results: Array[Dictionary] = space.intersect_shape(query)
-	for entry: Dictionary in results:
-		if entry.get("collider", null) is BlockBase:
-			return true
-	return false
+func _get_preview_basis(definition: BuildDefinition) -> Basis:
+	if definition.full_rotation_supported:
+		return _ghost_basis
+	if definition.yaw_rotations_supported:
+		return Basis(Vector3.UP, _get_yaw_steps() * PI * 0.5)
+	return Basis.IDENTITY
 
-func _snap_position(hit_pos: Vector3, hit_normal: Vector3) -> Vector3:
-	## Step half a cell into the hit normal so we land inside the target cell,
-	## then snap X and Z independently to the 1 m grid.
-	var raw: Vector3 = hit_pos + hit_normal * (CELL_SIZE * 0.5)
-	var snapped_x: float = round(raw.x / CELL_SIZE) * CELL_SIZE
-	var snapped_z: float = round(raw.z / CELL_SIZE) * CELL_SIZE
-	return Vector3(snapped_x, WALL_CENTER_Y, snapped_z)
+func _get_yaw_steps() -> int:
+	var forward: Vector3 = -_ghost_basis.z
+	var flattened: Vector2 = Vector2(forward.x, forward.z)
+	if flattened.length_squared() <= 0.001:
+		return 0
+
+	var heading: Vector2 = flattened.normalized()
+	var candidates: Array[Vector2] = [
+		Vector2(0.0, -1.0),
+		Vector2(-1.0, 0.0),
+		Vector2(0.0, 1.0),
+		Vector2(1.0, 0.0),
+	]
+	var best_index: int = 0
+	var best_dot: float = -INF
+	for index: int in range(candidates.size()):
+		var dot_value: float = heading.dot(candidates[index])
+		if dot_value > best_dot:
+			best_dot = dot_value
+			best_index = index
+	return best_index
+
+func _get_variant_index(family_name: String) -> int:
+	return _family_variant_indices.get(family_name, 0) as int
+
+func _cycle_variant(family_name: String, direction: int) -> void:
+	var family_size: int = BlockPrefabs.get_build_family_size(family_name)
+	if family_size <= 1:
+		return
+	var current_index: int = _get_variant_index(family_name)
+	var next_index: int = posmod(current_index + direction, family_size)
+	_family_variant_indices[family_name] = next_index
+
+	var level: Level = GameRoot.instance.get_active_level()
+	var definition: BuildDefinition = BlockPrefabs.get_build_variant_definition(family_name, next_index)
+	if level != null and definition != null:
+		level.announcement_requested.emit(definition.display_name, 0.9)

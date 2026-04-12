@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RecipeData" format=3]
+
+[ext_resource type="Script" path="res://resources/recipes/recipe_data.gd" id="1_rd"]
+
+[resource]
+script = ExtResource("1_rd")
+display_name = "Armor Block"
+description = "Heavier reinforced block. Costs ore and limestone, but takes more punishment."
+cost_ore = 3
+cost_limestone = 3
+cost_crystals = 0

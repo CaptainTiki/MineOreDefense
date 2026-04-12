@@ -42,6 +42,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var mouse_event: InputEventMouseButton = event as InputEventMouseButton
 		if mouse_event.pressed:
+			if mouse_event.alt_pressed:
+				return
 			if mouse_event.button_index == MOUSE_BUTTON_WHEEL_UP:
 				set_active((_active_index - 1 + SLOT_COUNT) % SLOT_COUNT)
 				get_viewport().set_input_as_handled()

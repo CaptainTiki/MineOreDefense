@@ -1,0 +1,172 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/actors/enemies/enemy_controller.gd" id="1_ctrl"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/state_chart.gd" id="2_sc"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/parallel_state.gd" id="3_ps"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/compound_state.gd" id="4_cs"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/atomic_state.gd" id="5_as"]
+[ext_resource type="Script" path="res://addons/godot_state_charts/transition.gd" id="6_tr"]
+[ext_resource type="Script" path="res://game/actors/enemies/states/enemy_state_machine.gd" id="7_esm"]
+[ext_resource type="Script" path="res://game/actors/enemies/states/enemy_grounded_state.gd" id="8_gs"]
+[ext_resource type="Script" path="res://game/actors/enemies/states/enemy_idle_state.gd" id="9_is"]
+[ext_resource type="Script" path="res://game/actors/enemies/states/enemy_moving_state.gd" id="10_ms"]
+[ext_resource type="Script" path="res://game/actors/enemies/states/enemy_walking_state.gd" id="11_ws"]
+[ext_resource type="Script" path="res://game/actors/enemies/states/enemy_airborne_state.gd" id="12_as"]
+[ext_resource type="Script" path="res://game/actors/enemies/states/enemy_jumping_state.gd" id="13_js"]
+[ext_resource type="Script" path="res://game/actors/enemies/tasks/enemy_task_state_machine.gd" id="14_tsm"]
+[ext_resource type="Script" path="res://game/actors/enemies/tasks/seek_task_state.gd" id="15_seek"]
+[ext_resource type="Script" path="res://game/actors/enemies/tasks/attack_task_state.gd" id="16_attack"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
+radius = 0.45
+height = 1.4
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_body"]
+radius = 0.45
+height = 1.4
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_body"]
+albedo_color = Color(0.52, 0.23, 0.19, 1)
+roughness = 0.8
+
+[node name="Crawler" type="CharacterBody3D" node_paths=PackedStringArray("state_chart", "mesh_instance")]
+script = ExtResource("1_ctrl")
+state_chart = NodePath("StateChart")
+mesh_instance = NodePath("MeshInstance3D")
+move_speed = 3.2
+attack_range = 2.4
+attack_damage = 12
+attack_interval = 1.1
+max_health = 36
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_body")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("CapsuleMesh_body")
+surface_material_override/0 = SubResource("StandardMaterial3D_body")
+
+[node name="StateChart" type="Node" parent="."]
+script = ExtResource("2_sc")
+
+[node name="Root" type="Node" parent="StateChart"]
+script = ExtResource("3_ps")
+
+[node name="Movement" type="Node" parent="StateChart/Root"]
+script = ExtResource("4_cs")
+initial_state = NodePath("Grounded")
+
+[node name="Grounded" type="Node" parent="StateChart/Root/Movement"]
+script = ExtResource("4_cs")
+initial_state = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="StateChart/Root/Movement/Grounded"]
+script = ExtResource("5_as")
+
+[node name="OnMoving" type="Node" parent="StateChart/Root/Movement/Grounded/Idle"]
+script = ExtResource("6_tr")
+to = NodePath("../../Moving")
+event = &"onMoving"
+delay_in_seconds = "0.0"
+
+[node name="Moving" type="Node" parent="StateChart/Root/Movement/Grounded"]
+script = ExtResource("4_cs")
+initial_state = NodePath("Walking")
+
+[node name="Walking" type="Node" parent="StateChart/Root/Movement/Grounded/Moving"]
+script = ExtResource("5_as")
+
+[node name="OnIdle" type="Node" parent="StateChart/Root/Movement/Grounded/Moving"]
+script = ExtResource("6_tr")
+to = NodePath("../../Idle")
+event = &"onIdle"
+delay_in_seconds = "0.0"
+
+[node name="OnAirborne" type="Node" parent="StateChart/Root/Movement/Grounded"]
+script = ExtResource("6_tr")
+to = NodePath("../../Airborne/Jumping")
+event = &"onAirborne"
+delay_in_seconds = "0.0"
+
+[node name="Airborne" type="Node" parent="StateChart/Root/Movement"]
+script = ExtResource("4_cs")
+initial_state = NodePath("Jumping")
+
+[node name="Jumping" type="Node" parent="StateChart/Root/Movement/Airborne"]
+script = ExtResource("5_as")
+
+[node name="OnGrounded" type="Node" parent="StateChart/Root/Movement/Airborne"]
+script = ExtResource("6_tr")
+to = NodePath("../../Grounded")
+event = &"onGrounded"
+delay_in_seconds = "0.0"
+
+[node name="Task" type="Node" parent="StateChart/Root"]
+script = ExtResource("4_cs")
+initial_state = NodePath("Seek")
+
+[node name="Seek" type="Node" parent="StateChart/Root/Task"]
+script = ExtResource("5_as")
+
+[node name="OnAttackRangeEntered" type="Node" parent="StateChart/Root/Task/Seek"]
+script = ExtResource("6_tr")
+to = NodePath("../../Attack")
+event = &"onAttackRangeEntered"
+delay_in_seconds = "0.0"
+
+[node name="Attack" type="Node" parent="StateChart/Root/Task"]
+script = ExtResource("5_as")
+
+[node name="OnAttackRangeExited" type="Node" parent="StateChart/Root/Task/Attack"]
+script = ExtResource("6_tr")
+to = NodePath("../../Seek")
+event = &"onAttackRangeExited"
+delay_in_seconds = "0.0"
+
+[node name="MovementStateMachine" type="Node" parent="." node_paths=PackedStringArray("enemy_controller")]
+unique_name_in_owner = true
+script = ExtResource("7_esm")
+enemy_controller = NodePath("..")
+
+[node name="GroundedState" type="Node" parent="MovementStateMachine"]
+script = ExtResource("8_gs")
+
+[node name="IdleState" type="Node" parent="MovementStateMachine/GroundedState"]
+script = ExtResource("9_is")
+
+[node name="MovingState" type="Node" parent="MovementStateMachine/GroundedState"]
+script = ExtResource("10_ms")
+
+[node name="WalkingState" type="Node" parent="MovementStateMachine/GroundedState/MovingState"]
+script = ExtResource("11_ws")
+
+[node name="AirborneState" type="Node" parent="MovementStateMachine"]
+script = ExtResource("12_as")
+
+[node name="JumpingState" type="Node" parent="MovementStateMachine/AirborneState"]
+script = ExtResource("13_js")
+
+[node name="TaskStateMachine" type="Node" parent="." node_paths=PackedStringArray("enemy_controller")]
+unique_name_in_owner = true
+script = ExtResource("14_tsm")
+enemy_controller = NodePath("..")
+
+[node name="SeekState" type="Node" parent="TaskStateMachine"]
+script = ExtResource("15_seek")
+
+[node name="AttackState" type="Node" parent="TaskStateMachine"]
+script = ExtResource("16_attack")
+
+[connection signal="state_physics_processing" from="StateChart/Root/Movement/Grounded" to="MovementStateMachine/GroundedState" method="_on_grounded_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/Movement/Grounded/Idle" to="MovementStateMachine/GroundedState/IdleState" method="_on_idle_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/Movement/Grounded/Moving" to="MovementStateMachine/GroundedState/MovingState" method="_on_moving_state_physics_processing"]
+[connection signal="state_entered" from="StateChart/Root/Movement/Grounded/Moving/Walking" to="MovementStateMachine/GroundedState/MovingState/WalkingState" method="_on_walking_state_entered"]
+[connection signal="state_physics_processing" from="StateChart/Root/Movement/Grounded/Moving/Walking" to="MovementStateMachine/GroundedState/MovingState/WalkingState" method="_on_walking_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/Movement/Airborne" to="MovementStateMachine/AirborneState" method="_on_airborne_state_physics_processing"]
+[connection signal="state_entered" from="StateChart/Root/Movement/Airborne/Jumping" to="MovementStateMachine/AirborneState/JumpingState" method="_on_jumping_state_entered"]
+[connection signal="state_physics_processing" from="StateChart/Root/Movement/Airborne/Jumping" to="MovementStateMachine/AirborneState/JumpingState" method="_on_jumping_state_physics_processing"]
+[connection signal="state_physics_processing" from="StateChart/Root/Task/Seek" to="TaskStateMachine/SeekState" method="_on_seek_state_physics_processing"]
+[connection signal="state_entered" from="StateChart/Root/Task/Attack" to="TaskStateMachine/AttackState" method="_on_attack_state_entered"]
+[connection signal="state_physics_processing" from="StateChart/Root/Task/Attack" to="TaskStateMachine/AttackState" method="_on_attack_state_physics_processing"]

@@ -19,6 +19,7 @@ var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 @export var _interaction_ray: RayCast3D
 @export var crouch_check: ShapeCast3D
 @export var camera_effects: CameraEffects
+@export var flashlight: SpotLight3D
 @export_category("Easing")
 @export var acceleration : float = 0.2
 @export var deceleration : float = 0.5
@@ -50,6 +51,8 @@ func _ready() -> void:
 	inventory.inventory_changed.connect(_on_inventory_changed)
 	hotbar.active_slot_changed.connect(_on_active_slot_changed)
 	hotbar.set_active(hotbar.get_active_index())
+	if flashlight != null:
+		flashlight.visible = false
 
 func _physics_process(delta: float) -> void:
 	# Apply gravity regardless of menu state
@@ -60,6 +63,9 @@ func _physics_process(delta: float) -> void:
 	var gameplay_input_active: bool = Input.mouse_mode == Input.MOUSE_MODE_CAPTURED
 
 	if gameplay_input_active:
+		if Input.is_action_just_pressed("toggle_flashlight") and flashlight != null:
+			flashlight.visible = not flashlight.visible
+
 		# Jump
 		if Input.is_action_just_pressed("jump") and is_on_floor():
 			velocity.y = stats.jump_velocity

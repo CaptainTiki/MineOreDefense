@@ -1,0 +1,69 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/actors/blocks/composite_block.gd" id="1_block"]
+[ext_resource type="Resource" path="res://resources/recipes/doorway_wall.tres" id="2_recipe"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_left"]
+size = Vector3(0.25, 2, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_right"]
+size = Vector3(0.25, 2, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_top"]
+size = Vector3(0.5, 0.3, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_left"]
+size = Vector3(0.25, 2, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_right"]
+size = Vector3(0.25, 2, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_top"]
+size = Vector3(0.5, 0.3, 1)
+
+[sub_resource type="StandardMaterial3D" id="FrameMat_001"]
+transparency = 1
+albedo_color = Color(0.4, 0.65, 0.9, 0.35)
+shading_mode = 1
+cull_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="FullMat_001"]
+albedo_color = Color(0.58, 0.58, 0.62, 1)
+roughness = 0.75
+
+[node name="DoorwayWall" type="StaticBody3D"]
+script = ExtResource("1_block")
+max_hp = 160
+recipe = ExtResource("2_recipe")
+build_size = Vector3(1, 2, 1)
+occupied_cells = [Vector3i(0, 0, 0), Vector3i(0, 1, 0)]
+mesh_nodes = [NodePath("LeftColumn"), NodePath("RightColumn"), NodePath("Lintel")]
+frame_material = SubResource("FrameMat_001")
+full_material = SubResource("FullMat_001")
+
+[node name="LeftCollision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.375, 0, 0)
+shape = SubResource("BoxShape3D_left")
+
+[node name="RightCollision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.375, 0, 0)
+shape = SubResource("BoxShape3D_right")
+
+[node name="TopCollision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+shape = SubResource("BoxShape3D_top")
+
+[node name="LeftColumn" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.375, 0, 0)
+mesh = SubResource("BoxMesh_left")
+surface_material_override/0 = SubResource("FrameMat_001")
+
+[node name="RightColumn" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.375, 0, 0)
+mesh = SubResource("BoxMesh_right")
+surface_material_override/0 = SubResource("FrameMat_001")
+
+[node name="Lintel" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+mesh = SubResource("BoxMesh_top")
+surface_material_override/0 = SubResource("FrameMat_001")

@@ -47,7 +47,7 @@ height = 1.8
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_001"]
 albedo_color = Color(0.2, 0.6, 0.9, 1)
 
-[node name="Player" type="CharacterBody3D" unique_id=335673607 node_paths=PackedStringArray("camera", "state_chart", "standing_collision", "crouch_collision", "stats", "inventory", "build_inventory", "weapon_mount", "hotbar", "_interaction_ray", "crouch_check", "camera_effects")]
+[node name="Player" type="CharacterBody3D" unique_id=335673607 node_paths=PackedStringArray("camera", "state_chart", "standing_collision", "crouch_collision", "stats", "inventory", "build_inventory", "weapon_mount", "hotbar", "_interaction_ray", "crouch_check", "camera_effects", "flashlight")]
 script = ExtResource("1_ctrl")
 camera = NodePath("Componenets/CameraController")
 state_chart = NodePath("StateChart")
@@ -61,6 +61,7 @@ hotbar = NodePath("Hotbar")
 _interaction_ray = NodePath("Componenets/CameraController/Camera3D/InteractionRay")
 crouch_check = NodePath("CrouchCheck")
 camera_effects = NodePath("Componenets/CameraController/Camera3D")
+flashlight = NodePath("Componenets/CameraController/Camera3D/Flashlight")
 
 [node name="PlayerStats" type="Node" parent="." unique_id=1292407703]
 script = ExtResource("2_stats")
@@ -135,6 +136,18 @@ bob_magnitude = null
 [node name="InteractionRay" type="RayCast3D" parent="Componenets/CameraController/Camera3D" unique_id=433032732]
 target_position = Vector3(0, 0, -3)
 script = ExtResource("7_a20ea")
+
+[node name="Flashlight" type="SpotLight3D" parent="Componenets/CameraController/Camera3D" unique_id=2026041101]
+visible = false
+transform = Transform3D(1, 0, 0, 0, 0.9998477, -0.0174524, 0, 0.0174524, 0.9998477, 0, -0.02, 0)
+light_color = Color(1, 0.956863, 0.831373, 1)
+light_energy = 2.8
+light_specular = 0.4
+spot_range = 28.0
+spot_angle = 36.0
+spot_angle_attenuation = 0.85
+shadow_enabled = true
+shadow_bias = 0.05
 
 [node name="WeaponMount" type="Node3D" parent="Componenets/CameraController/Camera3D" unique_id=784375009]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.3, -0.5)
