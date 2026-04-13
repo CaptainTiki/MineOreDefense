@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="BuildDefinition" format=3]
+
+[ext_resource type="Script" path="res://resources/build_definition.gd" id="1_def"]
+[ext_resource type="Resource" path="res://resources/recipes/core_pod.tres" id="2_recipe"]
+[ext_resource type="PackedScene" path="res://game/actors/blocks/core_pod/core_pod.tscn" id="3_scene"]
+
+[resource]
+script = ExtResource("1_def")
+display_name = "Core Pod"
+recipe = ExtResource("2_recipe")
+block_scene = ExtResource("3_scene")
+footprint_cells = [Vector3i(0, 0, 0), Vector3i(1, 0, 0), Vector3i(0, 0, 1), Vector3i(1, 0, 1), Vector3i(0, 1, 0), Vector3i(1, 1, 0), Vector3i(0, 1, 1), Vector3i(1, 1, 1)]
+yaw_rotations_supported = false
+full_rotation_supported = false
+preview_size = Vector3(2, 2, 2)

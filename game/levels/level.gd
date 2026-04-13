@@ -9,9 +9,16 @@ signal day_changed(day_number: int)
 signal announcement_requested(text: String, duration: float)
 
 var _occupied_cells: Dictionary = {}
+var _core_pod: CorePod = null
 
 func get_occupied_cells() -> Dictionary:
 	return _occupied_cells
+
+func get_core_pod() -> CorePod:
+	return _core_pod
+
+func has_core_pod() -> bool:
+	return _core_pod != null and is_instance_valid(_core_pod)
 
 func world_to_cell(world_position: Vector3) -> Vector3i:
 	return Vector3i(floori(world_position.x), floori(world_position.y), floori(world_position.z))
@@ -20,6 +27,8 @@ func get_candidate_root_cell(hit_position: Vector3, hit_normal: Vector3) -> Vect
 	return world_to_cell(hit_position + (hit_normal * 0.5))
 
 func can_place_build(definition: BuildDefinition, root_cell: Vector3i, yaw_steps: int) -> bool:
+	if definition.display_name == "Core Pod" and has_core_pod():
+		return false
 	for cell: Vector3i in get_world_cells_for_build(definition, root_cell, yaw_steps):
 		if _occupied_cells.has(cell):
 			return false
@@ -53,15 +62,37 @@ func register_placed_block(block: BlockBase, definition: BuildDefinition, root_c
 		_occupied_cells[cell] = block
 	if not block.block_destroyed.is_connected(_on_registered_block_destroyed):
 		block.block_destroyed.connect(_on_registered_block_destroyed.bind(block))
+	if block is CorePod:
+		_register_core_pod(block as CorePod)
 
 func unregister_placed_block(block: BlockBase) -> void:
 	for cell: Vector3i in block.occupied_world_cells:
 		if _occupied_cells.get(cell, null) == block:
 			_occupied_cells.erase(cell)
 	block.occupied_world_cells.clear()
+	if block == _core_pod:
+		_core_pod = null
 
 func _on_registered_block_destroyed(block: BlockBase) -> void:
 	unregister_placed_block(block)
+
+func _register_core_pod(core_pod: CorePod) -> void:
+	_core_pod = core_pod
+	if core_pod.current_hp < core_pod.max_hp:
+		core_pod.apply_repair()
+	if not core_pod.is_in_group("core_pod"):
+		core_pod.add_to_group("core_pod")
+	if not core_pod.hp_changed.is_connected(_on_core_pod_hp_changed):
+		core_pod.hp_changed.connect(_on_core_pod_hp_changed)
+	if not core_pod.core_pod_destroyed.is_connected(_on_core_pod_destroyed):
+		core_pod.core_pod_destroyed.connect(_on_core_pod_destroyed)
+	core_pod_health_changed.emit(float(core_pod.current_hp) / float(core_pod.max_hp))
+
+func _on_core_pod_hp_changed(current_hp: int, max_hp: int) -> void:
+	core_pod_health_changed.emit(float(current_hp) / float(max_hp))
+
+func _on_core_pod_destroyed() -> void:
+	core_pod_destroyed.emit()
 
 func _rotate_cell(cell: Vector3i, yaw_steps: int) -> Vector3i:
 	match posmod(yaw_steps, 4):

@@ -7,6 +7,9 @@ const CRYSTAL_VEIN: String = "res://game/actors/blocks/veins/crystal_vein.tscn"
 const CORE_POD: String = "res://game/actors/blocks/core_pod/core_pod.tscn"
 
 const BUILD_FAMILY_PATHS: Dictionary = {
+	"Core Pod": [
+		"res://resources/build_definitions/core_pod.tres",
+	],
 	"Concrete Block": [
 		"res://resources/build_definitions/concrete_block.tres",
 		"res://resources/build_definitions/concrete_slope_block.tres",
